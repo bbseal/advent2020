@@ -1,7 +1,7 @@
 # https://adventofcode.com/2020/day/5
 Clear-Host
 
-$BoardingPasses = Get-Content "day5.txt"
+$BoardingPasses = Get-Content ".\day5\day5.txt"
 
 $SeatIDArray = @()
 

@@ -30,7 +30,7 @@ function partTwo ($Entries) {
 
 Clear-Host
 
-$Entries = Get-Content "day1.txt"
+$Entries = Get-Content ".\day1\day1.txt"
 
 partOne $Entries
 partTwo $Entries
