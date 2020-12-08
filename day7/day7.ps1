@@ -1,4 +1,4 @@
-# -- Part One (Done)
+# -- Part One
 function getParentBags ($QueryBag) {
     foreach ($Rule in $Global:BagRules) {
         $RuleBag = $Rule.Split(" bags contain ")[0]
@@ -16,9 +16,8 @@ function getParentBags ($QueryBag) {
     }
 }
 
-# -- Part Two (Incomplete)
-# -- Can't nail down out how to track the multipliers through the recursion...
-function getChildBags ($QueryBag, [Int]$BagMultiplier, [Int]$ParentMultiplier) {
+# -- Part Two
+function getChildBags ($QueryBag, [Int]$NumBags) {
     foreach ($Rule in $Global:BagRules) {
         $RuleBag = $Rule.Split(" bags contain ")[0]
         $RuleBagContains = $Rule.Split("contain ")[1]
@@ -29,38 +28,23 @@ function getChildBags ($QueryBag, [Int]$BagMultiplier, [Int]$ParentMultiplier) {
                 if ($ChildBag) {
                     $ChildBag = $ChildBag.Matches.Value.Trim()
                     $cbSplit = $ChildBag.Split(" ")
-                    $Global:ChildBagCount += ([Int]$cbSplit[0] * $BagMultiplier * $ParentMultiplier)
-                    #$ParentMultiplier = [Int]$cbSplit[0]
-                    $ParentMultiplier = $BagMultiplier
-                    if ($Global:rLevel -le 1) {
-                        $ParentMultiplier = 1
-                    }
-                    else {
-                        $ParentMultiplier = $BagMultiplier * $ParentMultiplier
-                    }
-                    if ($Rule.Split("contain ")[1] -ne "no other bags.") {
-                        $Global:rLevel++
-                        getChildBags ($cbSplit[1] + " " + $cbSplit[2]) ([Int]$cbSplit[0]) $ParentMultiplier
-                    }
-                }
-                else {
+                    $Global:ChildBagCount = $Global:ChildBagCount + (([Int]$cbSplit[0] * $NumBags))
+                    getChildBags ($cbSplit[1] + " " + $cbSplit[2]) (([Int]$cbSplit[0]) * $NumBags)
                 }
             }
         }
     }
 }
 
-$Global:BagRules = Get-Content ".\day7 (pt 2 incomplete)\day7.txt"
-
+Clear-Host
+$Global:BagRules = Get-Content ".\day7\day7.txt"
 
 # -- Part One
 $Global:ParentBags = @()
 getParentBags "shiny gold"
 $Global:ParentBags.Count
 
-
 # -- Part Two
 $Global:ChildBagCount = 0
-$Global:rLevel = 1
-#getChildBags "shiny gold" 1 1
-#$Global:ChildBagCount + 1
+getChildBags "shiny gold" 1
+$Global:ChildBagCount
