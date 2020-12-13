@@ -1,27 +1,28 @@
 function getSeriesMultiplier ($Number) {
-    if (($Number -eq 1) -or ($Number -eq 2)) {
-        return 1
+    $Series = @()
+    $Series += 1
+    $Series += 2
+    $Series += 4
+
+    if ($Number -lt 3) {
+        return $Series[0]
     }
-    elseif ($Number -eq 3) {
-        return 2
-    }
-    elseif ($Number -eq 4) {
-        return 4
+    elseif (($Number -eq 3) -or ($Number -eq 4)) {
+        return $Series[$Number-2]
     }
     else {
-        $Series = @()
-        $Series += 1
-        $Series += 2
-        $Series += 4
-        $i = 4
-        do {
-            $Sum = ($Series | Measure-Object -Sum).Sum
-            $Series += $Sum
-            $i++
-        } until ($i -ge $Number)
-        return $Sum
+        for ($i = 0; $i -lt $Number-4; $i++) {
+            $Prev3Sum = ($Series | Measure-Object -Sum).Sum
+            $NewArray = @()
+            $NewArray += $Series[1]
+            $NewArray += $Series[2]
+            $NewArray += $Prev3Sum
+            $Series = $NewArray
+        }
+        return $Series[2]
     }
 }
+
 
 Clear-Host
 
@@ -51,7 +52,7 @@ Write-Host "Part one: $($Add1Count * $Add3Count)"
 # -- Part Two
 $i = 0
 $Series = 1
-$Product = 1
+[long]$Product = 1
 do {
     if ($Adapters[$i]+1 -eq $Adapters[$i+1]) {
         $Series++
